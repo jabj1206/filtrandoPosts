@@ -1,28 +1,47 @@
-import React, { Component } from 'react';
-import posts from './posts'
-
+import React, { Component } from "react";
+import posts from "./posts";
 
 // Modifica el componente App para implmentar la funcionalidad requerida
 
 class App extends Component {
+  state = { search: "" };
+  _handleChange = e => {
+    console.log(e.target.value);
+    this.setState({ search: e.target.value });
+   
+  };
   render() {
+    const { search } = this.state;
+    const lowercasedFilter = search.toLowerCase();
+    const filteredData = posts.filter(item => {
+      return Object.keys(item).some(key =>
+        item[key].toLowerCase().includes(lowercasedFilter)
+      );
+    });
     return (
       <div>
         <div className="filter">
-          <input type="text" placeholder="Ingresa el término de búsqueda" />
+          <input
+            type="text"
+            placeholder="Ingresa el término de búsqueda"
+            onChange={this._handleChange}
+            value={this.state.search}
+          />
         </div>
         <ul>
-          <li>
-            <a href={posts[0].url}><img src={posts[0].image } /></a>
-            <p>{ posts[0].title }</p>
-          </li>
+          {filteredData.map(post => (
+            <li key={post.url}>
+              <a href={post.url}>
+                <img src={post.image}
+                alt={post.title} />
+              </a>
+              <p>{post.title}</p>
+            </li>
+          ))}
         </ul>
       </div>
-    )
+    );
   }
 }
 
-
-export default App
-
-
+export default App;
